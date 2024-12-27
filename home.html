@@ -7,7 +7,6 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom styles to mimic the design */
         .bg-gradient {
             background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
         }
@@ -17,23 +16,155 @@
             border-radius: 50%;
             object-fit: cover;
         }
+
+        /* Pill-shaped button with 3D effect */
+        .pill-button {
+            width: 66vw; /* 2/3 of the screen width */
+            height: 66vw; /* Make the height equal to the width for a perfect circle */
+            background: linear-gradient(135deg, #996633, #996515);
+            border-radius: 50%; /* Set border-radius to 50% to make it round */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 -2px 5px rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 0.1s;
+            position: absolute;
+            top: 55%; /* Position the pill button vertically in the center */
+            left: 50%; /* Position the pill button horizontally in the center */
+            transform: translate(-50%, -50%);
+        }
+
+        .pill-button:hover {
+            transform: scale(1.05) translate(-50%, -50%);
+        }
+
+        /* Floating "+1" animation */
+        .floating-point {
+            position: absolute;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #fff;
+            animation: float-up 1s ease-out forwards;
+        }
+
+        @keyframes float-up {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+        }
+
+        /* 3D Effect on the Image inside the button */
+        .coin-button-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4), inset 0 -2px 5px rgba(255, 255, 255, 0.4);
+            transition: transform 0.1s ease;
+        }
+        .pill-button:hover .coin-button-img {
+            transform: scale(1.1);
+        }
+
+        /* Positioning the coin counter and boost button */
+        #coin-counter {
+            position: fixed;
+            left: 30px;
+            bottom: 80px; /* Adjusted to appear below the coin button */
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        #boost-button {
+            position: fixed;
+            right: 30px;
+            bottom: 75px;
+            padding: 10px 20px;
+            background-color: #ff5722;
+            color: white;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        #boost-button:hover {
+            background-color: #ff7043;
+        }
+
+        /* Tap counter positioned 30px below the header */
+        #total-points {
+            position: absolute;
+            top: calc(4.8rem + 100px); /* 30px below the header */
+            left: 10%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        /* Container for the total points */
+        #total-points-container {
+            background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+            padding: 15px 0;
+            border-radius: 30px;
+            margin-top: 10px;
+        }
+
+        .content-section {
+            display: none; /* Hide all sections by default */
+        }
+
+        .content-section.active {
+            display: block; /* Show the active section */
+        }
+
     </style>
 </head>
 <body class="h-screen bg-gradient text-white">
 
     <!-- Top Navigation -->
-    <div class="flex justify-between items-center px-4 py-2">
-        <h1 class="text-xl font-bold">TapSwap</h1>
-        <div class="flex space-x-2">
-            <button class="btn btn-ghost">...</button>
+    <div class="navbar bg-base-100">
+        <div class="flex-1">
+          <a class="btn btn-ghost text-xl">QuirkCoin</a>
         </div>
-    </div>
+        <div class="flex-none gap-2">
+          <div class="form-control">
+          </div>
+          <div class="dropdown dropdown-end">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+              <div class="w-10 rounded-full">
+                <img
+                  alt="Tailwind CSS Navbar component"
+                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+              </div>
+            </div>
+            <ul
+              tabindex="0"
+              class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
+              <li>
+                <a class="justify-between">
+                  Profile
+                  <span class="badge">New</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
     <!-- Stats Section -->
     <div class="flex justify-between items-center px-4 py-3">
         <div class="flex items-center space-x-2">
-            <span class="text-lg font-semibold">102.50K</span>
-            <img src="coin.png" alt="coin" class="coin-icon">
+            <img src="coin.jpg" alt="coin" class="coin-icon">
         </div>
         <div class="flex items-center space-x-2">
             <button class="btn btn-outline">Wood</button>
@@ -42,49 +173,237 @@
     </div>
 
     <!-- Coin Display -->
-    <div class="flex justify-center items-center my-4">
-        <div class="bg-gray-800 p-4 rounded-lg text-center">
-            <img src="tap.png" alt="QuirkCoin" class="w-24 h-24 mx-auto mb-2">
-            <h2 class="text-2xl font-bold">500/500</h2>
-            <button class="btn btn-primary mt-2">Boost</button>
-        </div>
+    <div id="total-points-container">
+        <span id="total-points" class="text-lg font-semibold">0</span>
     </div>
+    <div class="flex flex-col justify-center items-center my-4">
+        <!-- Pill Button with 3D Effect -->
+        <button id="coin-button" class="pill-button">
+            <img src="tap.png" alt="Tap Coin" class="coin-button-img">
+        </button>
+    </div>
+
+    <!-- Coin Counter -->
+    <h2 id="coin-counter" class="text-2xl font-bold">⚡500/500</h2>
+
+    <!-- Boost Button -->
+<button id="boost-button" onclick="goToBoosterPage()">Boost 🔥</button>
+
+<script>
+    function goToBoosterPage() {
+        // Store the totalPoints value in localStorage before redirecting
+        localStorage.setItem('totalPoints', totalPoints);
+        window.location.href = 'booster.html'; // Redirect to booster page
+    }
+</script>
+
+
+    <!-- Floating Points Container -->
+    <div id="floating-points-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></div>
 
     <!-- Footer Navigation -->
-    <div class="fixed bottom-0 w-full bg-gray-900 py-2">
-        <div class="flex justify-between px-8">
-            <button class="btn btn-ghost btn-circle tooltip" data-tip="Earn">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-2 2v6a1 1 0 01-1 1H6a1 1 0 01-1-1V9z" />
-                </svg>
-            </button>
-            <button class="btn btn-ghost btn-circle tooltip" data-tip="Tasks">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v2H4zM4 10h16v2H4zM4 16h16v2H4z" />
-                </svg>
-            </button>
-            <button class="btn btn-ghost btn-circle tooltip" data-tip="Town">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 21v-6a2 2 0 012-2h8a2 2 0 012 2v6m-6-3v-5" />
-                </svg>
-            </button>
-            <button class="btn btn-ghost btn-circle tooltip" data-tip="Swap">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16m-7 4h7m-16 0h3" />
-                </svg>
-            </button>
-            <button class="btn btn-ghost btn-circle tooltip" data-tip="Account">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                </svg>
-            </button>
-            <button class="btn btn-ghost btn-circle tooltip" data-tip="Drop">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a10 10 0 00-10 10v7a2 2 0 002 2h16a2 2 0 002-2v-7a10 10 0 00-10-10zm0 0a4 4 0 110 8 4 4 0 010-8z" />
-                </svg>
-            </button>
-        </div>
+<div class="fixed bottom-0 w-full bg-gray-900 py-2">
+    <div class="flex justify-between px-8">
+        <a href="home.html" class="btn btn-ghost btn-circle tooltip" data-tip="Home" id="home-button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-2 2v6a1 1 0 01-1 1H6a1 1 0 01-1-1V9z" />
+            </svg>
+        </a>
+        <a href="tasks.html" class="btn btn-ghost btn-circle tooltip" data-tip="Tasks" id="tasks-button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v2H4zM4 10h16v2H4zM4 16h16v2H4z" />
+            </svg>
+        </a>
+        <a href="account.html" class="btn btn-ghost btn-circle tooltip" data-tip="Account" id="account-button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+            </svg>
+        </a>
+        <a href="drop.html" class="btn btn-ghost btn-circle tooltip" data-tip="Drop" id="drop-button">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a10 10 0 00-10 10v7a2 2 0 002 2h16a2 2 0 002-2v-7a10 10 0 00-10-10zm0 0a4 4 0 110 8 4 4 0 010-8z" />
+            </svg>
+        </a>
     </div>
+</div>
 
+<script>
+    let totalPoints = 0;  // Total points earned from tapping
+    let coinCount = 500;  // Starting coin count
+    let maxCoin = 500;    // Maximum coin count
+    let tapLimit = 1;     // Initial tap limit
+    let tapLevel = 500;   // Initial max coins (tap level)
+    let fillInterval;
+    let lastTapTime = Date.now(); // Track the last tap time
+    const totalPointsElement = document.getElementById("total-points");
+    const coinCounterElement = document.getElementById("coin-counter");
+    const coinButton = document.getElementById("coin-button");
+    const boostButton = document.getElementById("boost-button"); // Boost button
+    const floatingPointsContainer = document.getElementById("floating-points-container");
+
+    // Update the coin counter display
+    function updateCoinCounter() {
+        coinCounterElement.textContent = `⚡${coinCount}/${maxCoin}`;
+        checkButtonState();  // Check if button should be active/inactive based on coin count
+    }
+
+    // Update the tap counter (total points)
+    function updateTotalPoints() {
+        totalPointsElement.textContent = totalPoints.toLocaleString();
+    }
+
+    // Add floating "+1" animation
+    document.addEventListener("DOMContentLoaded", () => {
+        const body = document.body;
+
+        body.addEventListener("click", (event) => {
+            // Create a new floating +1 element
+            const floatingText = document.createElement("div");
+            floatingText.textContent = `+${tapLimit}`; // Display the current tap limit
+            floatingText.style.position = "absolute";
+            floatingText.style.left = `${event.pageX}px`; // X position of the tap
+            floatingText.style.top = `${event.pageY}px`;  // Y position of the tap
+            floatingText.style.fontSize = "24px";
+            floatingText.style.fontWeight = "bold";
+            floatingText.style.color = "white";
+            floatingText.style.transition = "all 1s ease-out";
+            floatingText.style.pointerEvents = "none";
+
+            body.appendChild(floatingText);
+
+            // Animate the floating +1
+            setTimeout(() => {
+                floatingText.style.opacity = "0";
+                floatingText.style.transform = "translateY(-50px)";
+            }, 10);
+
+            // Prevent "+1" animation from showing when clicking outside the button
+        document.body.addEventListener('click', (event) => {
+            const isClickInsideButton = boostButton.contains(event.target);
+
+            // If the click is outside the button, hide the floating "+1" and do not increase points
+            if (!isClickInsideButton) {
+                const floatingText = boostButton.querySelector('.floating-text');
+                floatingText.style.opacity = '0';
+                floatingText.style.transform = 'translate(-50%, -50%)';
+            }
+        });
+
+            // Remove the element after the animation ends
+            setTimeout(() => {
+                body.removeChild(floatingText);
+            }, 1000);
+        });
+    });
+
+    // Start filling the counter gradually when stopped tapping
+    function startFilling() {
+        // Only start filling if it's not already refilling
+        if (!fillInterval) {
+            fillInterval = setInterval(() => {
+                if (coinCount < maxCoin) {
+                    coinCount += 1; // Increase by 1 every second
+                    updateCoinCounter(); // Update the coin counter display
+                } else {
+                    clearInterval(fillInterval); // Stop when coin count reaches maxCoin
+                    fillInterval = null; // Reset interval state
+                }
+            }, 1000); // Update every second
+        }
+    }
+
+    // Coin button interaction (tapping)
+    coinButton.addEventListener("click", () => {
+        if (coinCount > 0) {
+            totalPoints += tapLimit; // Increase total points by the current tap limit
+            coinCount -= 1; // Decrease coin count by 1
+            updateTotalPoints();
+            updateCoinCounter();
+
+            if (fillInterval) {
+                clearInterval(fillInterval); // Stop the current filling
+                fillInterval = null; // Reset interval state
+            }
+            lastTapTime = Date.now(); // Update the last tap time
+        }
+    });
+
+    // Redirect to booster page when Boost Button is clicked
+boostButton.addEventListener("click", () => {
+    window.location.href = "booster.html"; // Redirect to booster.html
+});
+
+    // Start filling after 3 seconds of inactivity
+    setInterval(() => {
+        if (Date.now() - lastTapTime > 3000 && coinCount < maxCoin && !fillInterval) {
+            startFilling(); // Start filling after 3 seconds of inactivity
+        }
+    }, 1000);
+
+    // Disable or enable the tap button based on coin count
+    function checkButtonState() {
+        if (coinCount === 0) {
+            coinButton.disabled = true; // Disable the button if no coins are available
+            coinButton.style.opacity = "0.5"; // Optionally, change opacity for visual feedback
+        } else {
+            coinButton.disabled = false; // Enable the button if there are coins
+            coinButton.style.opacity = "1"; // Restore normal opacity
+        }
+    }
+
+    // Save to localStorage when points change:
+localStorage.setItem('totalPoints', totalPoints);
+
+// Retrieve from localStorage:
+totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
+
+    // Handle boost purchases (using total points)
+    boostButton.addEventListener("click", () => {
+        if (totalPoints >= 3500) {
+            // Level 5 boost (3500 points)
+            tapLimit += 5;
+            maxCoin += 500;
+            tapLevel += 500;
+            totalPoints -= 3500;
+            alert(`You've unlocked Level 5 Boost! Tap Limit: ${tapLimit}, Max Coins: ${maxCoin}`);
+        } else if (totalPoints >= 3000) {
+            // Level 4 boost (3000 points)
+            tapLimit += 4;
+            maxCoin += 400;
+            tapLevel += 400;
+            totalPoints -= 3000;
+            alert(`You've unlocked Level 4 Boost! Tap Limit: ${tapLimit}, Max Coins: ${maxCoin}`);
+        } else if (totalPoints >= 2500) {
+            // Level 3 boost (2500 points)
+            tapLimit += 3;
+            maxCoin += 300;
+            tapLevel += 300;
+            totalPoints -= 2500;
+            alert(`You've unlocked Level 3 Boost! Tap Limit: ${tapLimit}, Max Coins: ${maxCoin}`);
+        } else if (totalPoints >= 2000) {
+            // Level 2 boost (2000 points)
+            tapLimit += 2;
+            maxCoin += 200;
+            tapLevel += 200;
+            totalPoints -= 2000;
+            alert(`You've unlocked Level 2 Boost! Tap Limit: ${tapLimit}, Max Coins: ${maxCoin}`);
+        } else if (totalPoints >= 1000) {
+            // Level 1 boost (1000 points)
+            tapLimit += 1;
+            maxCoin += 100;
+            tapLevel += 100;
+            totalPoints -= 1000;
+            alert(`You've unlocked Level 1 Boost! Tap Limit: ${tapLimit}, Max Coins: ${maxCoin}`);
+        } else {
+            alert("You do not have enough points to buy any boost.");
+        }
+
+        updateTotalPoints(); // Update total points display after purchase
+        updateCoinCounter();  // Update coin counter display after purchase
+    });
+
+    // Initialize coin counter and check the button state
+    updateCoinCounter();
+</script>
 </body>
 </html>

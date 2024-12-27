@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boosters</title>
+</head>
+<body>
+    <style>
+        /* Basic styling for footer and content layout */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.content {
+    padding: 20px;
+}
+
+.footer-navigation {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
+    text-align: center;
+}
+
+.nav-links a {
+    margin: 0 20px;
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+.nav-links a:active {
+    color: #ccc;
+}
+
+
+    </style>
+    <h1>Boost Your Tapping Power!</h1>
+
+    <p>Current Tap Limit: <span id="tap-limit">1</span></p>
+    <p>Current Tap Level: <span id="tap-level">500</span></p>
+    <p>Total Points: <span id="total-points">0</span></p>
+    
+    <button id="tap-limit-booster">Buy Tap Limit Booster (+1)</button>
+    <button id="tap-level-booster">Buy Tap Level Booster (+250)</button>
+
+    <p>Points required for Tap Limit Booster: 1000 points</p>
+    <p>Points required for Tap Level Booster: 1000 points</p>
+
+    <!-- Message for insufficient points -->
+    <div id="insufficient-points-message" style="color: red; display: none;">
+        You do not have enough points to buy any boost.
+    </div>
+
+     <!-- Footer Navigation -->
+     <div class="fixed bottom-0 w-full bg-gray-900 py-2">
+     <div class="footer-navigation">
+        <div class="nav-links">
+            <a href="home.html" id="home-button">Home</a>
+            <a href="tasks.html" id="tasks-button">Tasks</a>
+            <a href="account.html" id="account-button">Account</a>
+            <a href="drop.html" id="drop-button">Drop</a>
+        </div>
+    </div>
+
+    <script>
+        // Fetch the total points from localStorage
+        let totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
+        document.getElementById('total-points').textContent = totalPoints;
+
+        // Check if the user has enough points for the boosters
+        const tapLimitButton = document.getElementById('tap-limit-booster');
+        const tapLevelButton = document.getElementById('tap-level-booster');
+        const insufficientMessage = document.getElementById('insufficient-points-message');
+
+        // Show message if points are insufficient
+        if (totalPoints < 1000) {
+            insufficientMessage.style.display = 'block';
+            tapLimitButton.disabled = true;
+            tapLevelButton.disabled = true;
+        }
+
+        // Handle Tap Limit Booster purchase
+        tapLimitButton.addEventListener('click', () => {
+            if (totalPoints >= 1000) {
+                // Logic for purchasing the booster (increase tap limit)
+                totalPoints -= 1000;
+                localStorage.setItem('totalPoints', totalPoints);
+                alert('Tap Limit Booster purchased!');
+            } else {
+                alert('Not enough points to purchase this booster.');
+            }
+        });
+
+        // Handle Tap Level Booster purchase
+        tapLevelButton.addEventListener('click', () => {
+            if (totalPoints >= 1000) {
+                // Logic for purchasing the booster (increase tap level)
+                totalPoints -= 1000;
+                localStorage.setItem('totalPoints', totalPoints);
+                alert('Tap Level Booster purchased!');
+            } else {
+                alert('Not enough points to purchase this booster.');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="account-container">
+        <h1>Account Page</h1>
+
+        <!-- Displaying the referral link -->
+        <div class="referral-container">
+            <h2>Your Unique Referral Link</h2>
+            <p id="referral-link">
+                <span id="link-text">Loading...</span>
+            </p>
+        </div>
+
+    <!-- Footer Navigation -->
+    <div class="footer-navigation">
+        <div class="nav-links">
+            <a href="home.html" id="home-button">Home</a>
+            <a href="tasks.html" id="tasks-button">Tasks</a>
+            <a href="account.html" id="account-button">Account</a>
+            <a href="drop.html" id="drop-button">Drop</a>
+        </div>
+    </div>
+
+      <!-- Displaying referred users -->
+      <div class="referred-users">
+        <h3>Invited Users:</h3>
+        <ul id="referred-list">
+        </ul>
+    </div>
+</div>
+
+<script>
+    const referredListElement = document.getElementById("referred-list");
+
+    referredUsers.forEach((user) => {
+        const li = document.createElement("li");
+        li.textContent = user;
+        referredListElement.appendChild(li);
+    });
+</script>
+</body>
+</html>
