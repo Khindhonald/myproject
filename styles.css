@@ -1,0 +1,129 @@
+/* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+  }
+  
+  .container {
+    max-width: 600px;
+    margin: auto;
+    padding: 20px;
+  }
+  
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  footer {
+    display: flex;
+    justify-content: space-around;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 10px 0;
+    background-color: #fff;
+    border-top: 1px solid #ddd;
+  }
+  
+  footer button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  button {
+    padding: 15px;
+    font-size: 18px;
+    cursor: pointer;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 8px;
+    width: 100%;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Tap Section */
+.tap-section {
+    text-align: center;
+  }
+  
+  .tap-btn {
+    width: 200px; /* Adjust image size as needed */
+    height: 200px;
+    cursor: pointer; /* Makes the image look clickable */
+    margin-top: 20px;
+  }
+  
+  .energy-level, .points-display, .boost-section {
+    margin-top: 20px;
+  }
+  
+  .recharge-timer {
+    margin-top: 20px;
+    color: #f44336;
+  }
+  
+  
+body {
+    background-color: #1a1a1a;
+    color: #f1f1f1;
+  }
+  
+  .splash-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    background-color: #1a1a1a;
+    opacity: 0.8;
+  }
+  body{
+      background-image: url('tap.png');
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+  }
+  
+  .app-title {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 1rem;
+  }
+  
+  .description {
+    color: #ddd;
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .btn-wide {
+    width: 80%;
+    max-width: 400px;
+    background-color: #f1f1f1 !important;
+    color: #1a1a1a !important;
+  }
+  
+  .splash-logo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: #444;
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    color: white;
+    font-weight: bold;
+  }
+  
