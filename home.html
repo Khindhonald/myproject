@@ -1,122 +1,90 @@
 <!DOCTYPE html>
-<html data-theme="dark" lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuirkCoin - Home</title>
-    <script src="https://telegram.org/js/telegram-web-app.js?56"></script>
-    <style>
-        /* Skeleton loading animation */
-        .skeleton {
-            background: linear-gradient(90deg, #1f2937 25%, #374151 50%, #1f2937 75%);
-            background-size: 200% 100%;
-            animation: skeleton-loading 1.5s infinite;
-        }
-        @keyframes skeleton-loading {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
-        }
-        .hidden {
-            display: none !important;
-        }
-    </style>
+    <title>QuirkCoin</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles to mimic the design */
+        .bg-gradient {
+            background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
+        }
+        .coin-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+    </style>
 </head>
-<body class="h-screen bg-base-100">
+<body class="h-screen bg-gradient text-white">
 
-    <!-- Preloader -->
-    <div id="preloader" class="h-screen flex items-center justify-center bg-base-100">
-        <div class="flex w-52 flex-col gap-4">
-            <div class="skeleton h-32 w-full rounded-lg"></div>
-            <div class="skeleton h-4 w-28 rounded"></div>
-            <div class="skeleton h-4 w-full rounded"></div>
-            <div class="skeleton h-4 w-full rounded"></div>
+    <!-- Top Navigation -->
+    <div class="flex justify-between items-center px-4 py-2">
+        <h1 class="text-xl font-bold">TapSwap</h1>
+        <div class="flex space-x-2">
+            <button class="btn btn-ghost">...</button>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <div id="content" class="hidden" >
-        <!-- Top Navbar -->
-        <div class="navbar bg-base-100" data-theme="black">
-            <div class="flex-1">
-                <a class="btn btn-ghost text-xl">QuirkCoin</a>
-            </div>
-            <div class="flex-none gap-2">
-                <div class="dropdown dropdown-end">
-
-                      </div>
-                    </div>
-                    <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-                        <li><a>Profile</a></li>
-                        <li><a>Logout</a></li>
-                    </ul>
-                </div>
-            </div>
+    <!-- Stats Section -->
+    <div class="flex justify-between items-center px-4 py-3">
+        <div class="flex items-center space-x-2">
+            <span class="text-lg font-semibold">102.50K</span>
+            <img src="coin.png" alt="coin" class="coin-icon">
         </div>
-        <!-- the main contents starts -->
-        <div class="bg-image1 card flex flex-row gap-3 bg-base-100 shadow-xl p-3">
-            <figure class="w-15 h-15 rounded-12 overflow-hidden mb-1">
-              <img
-                src="tap.png"
-                alt="Rounded Image"
-                class="w-full h-full object-cover"
-              />
-            </figure>
-            <div class="text-center">
-              <h2 class="card-title text-lg font-bold">Discover New Horizons!</h2>
-              <p class="mt-2 text-sm">Explore a world of exciting possibilities and insights with just one click.</p>
-              <div class="card-actions mt-4">
-                <button class="btn bg-white text-black btn-wide">Get Started</button>
-              </div>
-            </div>
-          </div>
-          
-          
-        <!-- main contents ends -->
-
-        <!-- Footer Navbar -->
-        <div class="fixed bottom-0 w-full bg-base-200 z-50" data-theme="black">
-            <ul class="menu menu-horizontal bg-base-200 rounded-t-lg p-2 flex justify-around">
-                <li>
-                    <a class="tooltip" data-tip="Home">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                        </svg>
-                    </a>
-                </li>
-                <li>
-                    <a class="tooltip" data-tip="Earn">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-3.865 0-7 1.567-7 3.5S8.135 15 12 15s7-1.567 7-3.5S15.865 8 12 8z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15c-3.865 0-7 1.567-7 3.5S8.135 22 12 22s7-1.567 7-3.5-3.135-3.5-7-3.5z" />
-                        </svg>
-                    </a>
-                </li>
-                <li>
-                    <a class="tooltip" data-tip="Friends">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10a4 4 0 11-8 0 4 4 0 018 0zM16 18c0 2.5-4 2.5-4 0v-3m4 0a4 4 0 018 0v3c0 2.5-4 2.5-4 0v-3z" />
-                        </svg>
-                    </a>
-                </li>
-                <li>
-                    <a class="tooltip" data-tip="Wallet">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16m-7 4h7m-16 0h3" />
-                        </svg>
-                    </a>
-                </li>
-            </ul>
+        <div class="flex items-center space-x-2">
+            <button class="btn btn-outline">Wood</button>
+            <button class="btn">Connect Wallet</button>
         </div>
     </div>
 
-    <script>
-        // Hide preloader and show content after page load
-        window.addEventListener("load", function() {
-            document.getElementById("preloader").classList.add("hidden");
-            document.getElementById("content").classList.remove("hidden");
-        });
-    </script>
+    <!-- Coin Display -->
+    <div class="flex justify-center items-center my-4">
+        <div class="bg-gray-800 p-4 rounded-lg text-center">
+            <img src="coin.png" alt="QuirkCoin" class="w-24 h-24 mx-auto mb-2">
+            <h2 class="text-2xl font-bold">500/500</h2>
+            <button class="btn btn-primary mt-2">Boost</button>
+        </div>
+    </div>
+
+    <!-- Footer Navigation -->
+    <div class="fixed bottom-0 w-full bg-gray-900 py-2">
+        <div class="flex justify-between px-8">
+            <button class="btn btn-ghost btn-circle tooltip" data-tip="Earn">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-2 2v6a1 1 0 01-1 1H6a1 1 0 01-1-1V9z" />
+                </svg>
+            </button>
+            <button class="btn btn-ghost btn-circle tooltip" data-tip="Tasks">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4h16v2H4zM4 10h16v2H4zM4 16h16v2H4z" />
+                </svg>
+            </button>
+            <button class="btn btn-ghost btn-circle tooltip" data-tip="Town">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 21v-6a2 2 0 012-2h8a2 2 0 012 2v6m-6-3v-5" />
+                </svg>
+            </button>
+            <button class="btn btn-ghost btn-circle tooltip" data-tip="Swap">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16m-7 4h7m-16 0h3" />
+                </svg>
+            </button>
+            <button class="btn btn-ghost btn-circle tooltip" data-tip="Account">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                </svg>
+            </button>
+            <button class="btn btn-ghost btn-circle tooltip" data-tip="Drop">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 2a10 10 0 00-10 10v7a2 2 0 002 2h16a2 2 0 002-2v-7a10 10 0 00-10-10zm0 0a4 4 0 110 8 4 4 0 010-8z" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
 </body>
 </html>
