@@ -62,6 +62,16 @@
             }
         }
 
+        /* Restrict animations to the container inside the button */
+#coin-button {
+  position: relative;
+  overflow: hidden;
+}
+
+.floating-animation-container {
+  position: relative;
+}
+
         /* 3D Effect on the Image inside the button */
         .coin-button-img {
             width: 100px;
@@ -179,6 +189,8 @@
     <div class="flex flex-col justify-center items-center my-4">
         <!-- Pill Button with 3D Effect -->
         <button id="coin-button" class="pill-button">
+            <span class="label">Click Me!</span>
+  <span class="floating-animation-container"></span>
             <img src="tap.png" alt="Tap Coin" class="coin-button-img">
         </button>
     </div>
@@ -239,7 +251,6 @@
     const coinCounterElement = document.getElementById("coin-counter");
     const coinButton = document.getElementById("coin-button");
     const boostButton = document.getElementById("boost-button"); // Boost button
-    const floatingPointsContainer = document.getElementById("floating-points-container");
 
     // Update the coin counter display
     function updateCoinCounter() {
@@ -253,23 +264,41 @@
     }
 
     // Add floating "+1" animation
-    document.addEventListener("DOMContentLoaded", () => {
-        const body = document.body;
+    coinButton.addEventListener("click", (event) => {
+        if (coinCount > 0) {
+            // Increase total points and decrease coin count
+            totalPoints += tapLimit;
+            coinCount -= 1;
+            updateTotalPoints();
+            updateCoinCounter();
 
-        body.addEventListener("click", (event) => {
+            if (fillInterval) {
+                clearInterval(fillInterval); // Stop the current filling
+                fillInterval = null; // Reset interval state
+            }
+            lastTapTime = Date.now(); // Update the last tap time
+
             // Create a new floating +1 element
             const floatingText = document.createElement("div");
-            floatingText.textContent = `+${tapLimit}`; // Display the current tap limit
+            floatingText.textContent = `+${tapLimit}`;
             floatingText.style.position = "absolute";
-            floatingText.style.left = `${event.pageX}px`; // X position of the tap
-            floatingText.style.top = `${event.pageY}px`;  // Y position of the tap
+
+            // Get the position of the click relative to the button
+            const rect = coinButton.getBoundingClientRect();
+            const x = event.clientX - rect.left; // X position within the button
+            const y = event.clientY - rect.top; // Y position within the button
+
+            // Set initial styles for the floating +1
+            floatingText.style.left = `${x}px`;
+            floatingText.style.top = `${y}px`;
             floatingText.style.fontSize = "24px";
             floatingText.style.fontWeight = "bold";
             floatingText.style.color = "white";
             floatingText.style.transition = "all 1s ease-out";
             floatingText.style.pointerEvents = "none";
 
-            body.appendChild(floatingText);
+            // Append the floating +1 to the coin button
+            coinButton.appendChild(floatingText);
 
             // Animate the floating +1
             setTimeout(() => {
@@ -277,28 +306,15 @@
                 floatingText.style.transform = "translateY(-50px)";
             }, 10);
 
-            // Prevent "+1" animation from showing when clicking outside the button
-        document.body.addEventListener('click', (event) => {
-            const isClickInsideButton = pill-button.contains(event.target);
-
-            // If the click is outside the button, hide the floating "+1" and do not increase points
-            if (!isClickInsideButton) {
-                const floatingText = pill-button.querySelector('.floating-text');
-                floatingText.style.opacity = '0';
-                floatingText.style.transform = 'translate(-50%, -50%)';
-            }
-        });
-
-            // Remove the element after the animation ends
+            // Remove the floating +1 after the animation ends
             setTimeout(() => {
-                body.removeChild(floatingText);
+                coinButton.removeChild(floatingText);
             }, 1000);
-        });
+        }
     });
 
     // Start filling the counter gradually when stopped tapping
     function startFilling() {
-        // Only start filling if it's not already refilling
         if (!fillInterval) {
             fillInterval = setInterval(() => {
                 if (coinCount < maxCoin) {
@@ -312,26 +328,10 @@
         }
     }
 
-    // Coin button interaction (tapping)
-    coinButton.addEventListener("click", () => {
-        if (coinCount > 0) {
-            totalPoints += tapLimit; // Increase total points by the current tap limit
-            coinCount -= 1; // Decrease coin count by 1
-            updateTotalPoints();
-            updateCoinCounter();
-
-            if (fillInterval) {
-                clearInterval(fillInterval); // Stop the current filling
-                fillInterval = null; // Reset interval state
-            }
-            lastTapTime = Date.now(); // Update the last tap time
-        }
-    });
-
     // Redirect to booster page when Boost Button is clicked
-boostButton.addEventListener("click", () => {
-    window.location.href = "booster.html"; // Redirect to booster.html
-});
+    boostButton.addEventListener("click", () => {
+        window.location.href = "booster.html"; // Redirect to booster.html
+    });
 
     // Start filling after 3 seconds of inactivity
     setInterval(() => {
@@ -351,11 +351,11 @@ boostButton.addEventListener("click", () => {
         }
     }
 
-    // Save to localStorage when points change:
-localStorage.setItem('totalPoints', totalPoints);
+    // Save to localStorage when points change
+    localStorage.setItem('totalPoints', totalPoints);
 
-// Retrieve from localStorage:
-totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
+    // Retrieve from localStorage
+    totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
 
     // Handle boost purchases (using total points)
     boostButton.addEventListener("click", () => {
