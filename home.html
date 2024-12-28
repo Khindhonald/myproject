@@ -8,16 +8,21 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="telegram.org/js/telegram-web-app.js"></script>
     <script>
-        // Init TWA
-    Telegram.WebApp.ready();
+        // Initialize the Telegram Web App
+        Telegram.WebApp.ready();
 
-Telegram.WebApp.expand();   
+        // Fetch user details from Telegram
+        const { first_name, last_name, username } = Telegram.WebApp.initDataUnsafe.user;
 
-const {
-    first_name,
-    last_name,
-    username,
-} = window.Telegram.WebApp.initDataUnsafe.user;
+        // Select the username element
+        const usernameElement = document.querySelector('.username');
+
+        // Update the username dynamically
+        if (username) {
+            usernameElement.textContent = `${first_name} ${last_name} (@${username})`;
+        } else {
+            usernameElement.textContent = `${first_name} ${last_name} (No username set)`;
+        }
     </script>
     <style>
         .bg-gradient {
@@ -319,7 +324,7 @@ const {
     <div class="flex items-center space-x-2 left-section">
         <img src="coin.jpg" alt="coin" class="coin-icon">
         <div>
-            <p class="username">Khin Dhonald (CEO)</p>
+            <p class="username">Loading...</p>
             <p class="level">Rookie</p>
         </div>
     </div>
