@@ -349,7 +349,7 @@
 
 <script>
     let totalPoints = 0;  // Total points earned from tapping
-    let coinCount = 500;  // Starting coin count
+    let coinCount = 500;  // Starting coin count (this will be updated based on localStorage)
     let maxCoin = 500;    // Maximum coin count
     let tapLimit = 1;     // Initial tap limit
     let tapLevel = 500;   // Initial max coins (tap level)
@@ -360,18 +360,48 @@
     const coinButton = document.getElementById("coin-button");
     const boostButton = document.getElementById("boost-button"); // Boost button
 
-    // Update the coin counter display
-    function updateCoinCounter() {
-        coinCounterElement.textContent = `⚡${coinCount}/${maxCoin}`;
-        checkButtonState();  // Check if button should be active/inactive based on coin count
+    // Load data from localStorage
+    function loadDataFromLocalStorage() {
+        totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
+        coinCount = parseInt(localStorage.getItem('coinCount')) || 500; // Load the last coin count
+        lastTapTime = parseInt(localStorage.getItem('lastTapTime')) || Date.now(); // Load last tap time
+        const lastRefillTime = parseInt(localStorage.getItem('lastRefillTime')) || Date.now(); // Load last refill time
+
+        // Calculate the time passed since last interaction (in seconds)
+        const timeElapsed = Math.floor((Date.now() - lastRefillTime) / 1000);
+
+        // Resume the refill based on the time elapsed
+        if (coinCount < maxCoin) {
+            const refillAmount = timeElapsed; // Refill by 1 coin per second
+            coinCount = Math.min(coinCount + refillAmount, maxCoin); // Cap to maxCoin
+            updateCoinCounter();
+        }
+
+        // Check if refill was already in progress
+        if (coinCount < maxCoin && !fillInterval) {
+            startFilling(); // Resume filling if not already refilling
+        }
     }
 
-    // Update the tap counter (total points)
+    // Save data to localStorage
+    function saveDataToLocalStorage() {
+        localStorage.setItem('totalPoints', totalPoints);
+        localStorage.setItem('coinCount', coinCount); // Save the current coin count
+        localStorage.setItem('lastTapTime', Date.now()); // Save the last tap time
+        localStorage.setItem('lastRefillTime', Date.now()); // Save the last refill time
+    }
+
+    // Update the coin counter display
+    function updateCoinCounter() {
+        coinCounterElement.textContent = `⚡${coinCount}/500`;
+    }
+
+    // Update the tap counter
     function updateTotalPoints() {
         totalPointsElement.textContent = totalPoints.toLocaleString();
     }
 
-    // Add floating "+1" animation
+    // Add floating "+1" animation on each tap
     coinButton.addEventListener("click", (event) => {
         if (coinCount > 0) {
             // Increase total points and decrease coin count
@@ -379,6 +409,9 @@
             coinCount -= 1;
             updateTotalPoints();
             updateCoinCounter();
+
+            // Save the updated points and coin count to localStorage
+            saveDataToLocalStorage();
 
             if (fillInterval) {
                 clearInterval(fillInterval); // Stop the current filling
@@ -421,35 +454,19 @@
         }
     });
 
-   // Get the "Connect Wallet" button, popup, and close buttons
-const connectWalletButton = document.querySelector(".btn.btn:nth-child(2)"); // Second button in the buttons section
-const walletPopup = document.getElementById("walletPopup");
-const closePopupTopRight = document.getElementById("closePopupTopRight");
-const closePopupBottom = document.getElementById("closePopupBottom");
-
-// Show the popup when the "Connect Wallet" button is clicked
-connectWalletButton.addEventListener("click", () => {
-    walletPopup.classList.remove("hidden");
-});
-
-// Hide the popup when either close button is clicked
-closePopupTopRight.addEventListener("click", () => {
-    walletPopup.classList.add("hidden");
-});
-
-closePopupBottom.addEventListener("click", () => {
-    walletPopup.classList.add("hidden");
-});
-
     // Start filling the counter gradually when stopped tapping
     function startFilling() {
+        // Only start filling if it's not already refilling
         if (!fillInterval) {
             fillInterval = setInterval(() => {
                 if (coinCount < maxCoin) {
                     coinCount += 1; // Increase by 1 every second
                     updateCoinCounter(); // Update the coin counter display
+
+                    // Save the updated coin count to localStorage
+                    saveDataToLocalStorage();
                 } else {
-                    clearInterval(fillInterval); // Stop when coin count reaches maxCoin
+                    clearInterval(fillInterval); // Stop when coin count reaches maxCoin (500)
                     fillInterval = null; // Reset interval state
                 }
             }, 1000); // Update every second
@@ -457,11 +474,10 @@ closePopupBottom.addEventListener("click", () => {
     }
 
     // Redirect to booster page when Boost Button is clicked
-boostButton.addEventListener("click", () => {
-    // Always redirect to boost.html
-    window.location.href = "booster.html";
-});
-
+    boostButton.addEventListener("click", () => {
+        // Always redirect to boost.html
+        window.location.href = "booster.html";
+    });
 
     // Start filling after 3 seconds of inactivity
     setInterval(() => {
@@ -480,12 +496,6 @@ boostButton.addEventListener("click", () => {
             coinButton.style.opacity = "1"; // Restore normal opacity
         }
     }
-
-    // Save to localStorage when points change
-    localStorage.setItem('totalPoints', totalPoints);
-
-    // Retrieve from localStorage
-    totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
 
     // Handle boost purchases (using total points)
     boostButton.addEventListener("click", () => {
@@ -528,12 +538,15 @@ boostButton.addEventListener("click", () => {
             alert("You do not have enough points to buy any boost.");
         }
 
+        saveDataToLocalStorage(); // Save data after purchase
         updateTotalPoints(); // Update total points display after purchase
         updateCoinCounter();  // Update coin counter display after purchase
     });
 
-    // Initialize coin counter and check the button state
+    // Initialize coin counter, total points, and check the button state
+    loadDataFromLocalStorage(); // Load total points and coin count from localStorage
     updateCoinCounter();
+    updateTotalPoints();
 </script>
 </body>
 </html>
