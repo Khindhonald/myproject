@@ -245,18 +245,6 @@
     font-weight: bold;
 }
 
-.user-container {
-            margin-top: 50px;
-            padding: 20px;
-            background: #e0e0e0;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .user-container h1 {
-            color: #333;
-        }
-
 .level {
     font-size: 14px;
     color: #ccc;
@@ -533,54 +521,6 @@
             }, 1000);
         }
     });
-
-    const TelegramBot = require("node-telegram-bot-api");
-
-// Replace with your bot token
-const token = "7932400528:AAE3H1QaRxsoygNKr-QChsBbUXIN35yTnmE";
-const bot = new TelegramBot(token, { polling: true });
-
-bot.on("message", (msg) => {
-    const chatId = msg.chat.id;
-
-    // Extract user details
-    const firstName = msg.from.first_name;
-    const lastName = msg.from.last_name || ""; // Optional
-    const username = msg.from.username || ""; // Optional
-
-    // Construct the full name
-    const fullName = `${firstName} ${lastName}`.trim();
-
-    // Respond to the user
-    bot.sendMessage(chatId, `Hello, ${fullName || username}! Welcome to the bot.`);
-});
-
-// Check if Telegram WebApp is available
-if (window.Telegram.WebApp) {
-            // Access Telegram WebApp object
-            const tg = window.Telegram.WebApp;
-
-            // Fetch user data
-            const user = tg.initDataUnsafe?.user;
-
-            // Check if the user data exists
-            if (user) {
-                // Extract user's first name, last name, or username
-                const firstName = user.first_name || "";
-                const lastName = user.last_name || "";
-                const username = user.username || "";
-
-                // Combine names or fallback to username
-                const fullName = `${firstName} ${lastName}`.trim() || username;
-
-                // Display the user's name in the webpage
-                document.getElementById("user-name").innerText = fullName;
-            } else {
-                console.log("No user data available.");
-            }
-        } else {
-            console.error("Telegram WebApp API is not available.");
-        }
 
     // Start filling the counter gradually when stopped tapping
     function startFilling() {
