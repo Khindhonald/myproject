@@ -8,21 +8,32 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="telegram.org/js/telegram-web-app.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script>
-    // Initialize Telegram Web App
-    Telegram.WebApp.ready();
+    <script>
+        // Function to replace placeholders in the HTML
+        function replacePlaceholders(placeholders) {
+            // Loop through each placeholder and replace it
+            Object.keys(placeholders).forEach((key) => {
+                const placeholder = `%${key}%`; // Placeholder format
+                const value = placeholders[key]; // Value to replace with
+                
+                // Replace all instances of the placeholder in the HTML
+                document.body.innerHTML = document.body.innerHTML.replaceAll(placeholder, value);
+            });
+        }
 
-    // Fetch user data from Telegram
-    const { username, first_name, last_name } = Telegram.WebApp.initDataUnsafe.user;
+        // Initialize Telegram Web App
+        Telegram.WebApp.ready();
 
-    // Replace placeholder in the HTML
-    const usernameElement = document.querySelector('.username');
-    if (username) {
-        usernameElement.textContent = `@${username}`;
-    } else {
-        usernameElement.textContent = `${first_name} ${last_name} (No username set)`;
-    }
-</script>
+        // Fetch user details from Telegram
+        const user = Telegram.WebApp.initDataUnsafe.user || {};
+        const placeholders = {
+            username: user.username || "Guest",
+            level: "Rookie", // Default value
+        };
+
+        // Replace placeholders in the HTML
+        replacePlaceholders(placeholders);
+    </script>
     <style>
         .bg-gradient {
             background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
@@ -324,7 +335,7 @@
         <img src="coin.jpg" alt="coin" class="coin-icon">
         <div>
             <p class="username">%username%</p>
-            <p class="level">Rookie</p>
+            <p class="level">%level%</p>
         </div>
     </div>
     <div class="flex items-center space-x-2 right-section">
