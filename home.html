@@ -6,6 +6,19 @@
     <title>QuirkCoin</title>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        // Init TWA
+    Telegram.WebApp.ready();
+
+Telegram.WebApp.expand();   
+
+const {
+    first_name,
+    last_name,
+    username,
+} = window.Telegram.WebApp.initDataUnsafe.user;
+    </script>
     <style>
         .bg-gradient {
             background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
@@ -426,7 +439,6 @@
     // DOM elements
     const progressElement = document.getElementById("progress"); // Progress bar element
     const levelElement = document.getElementById("level"); // Level display element
-
 
     // Load data from localStorage
     function loadDataFromLocalStorage() {
