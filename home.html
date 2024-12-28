@@ -7,23 +7,22 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="telegram.org/js/telegram-web-app.js"></script>
-    <script>
-        // Initialize the Telegram Web App
-        Telegram.WebApp.ready();
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script>
+    // Initialize Telegram Web App
+    Telegram.WebApp.ready();
 
-        // Fetch user details from Telegram
-        const { first_name, last_name, username } = Telegram.WebApp.initDataUnsafe.user;
+    // Fetch user data from Telegram
+    const { username, first_name, last_name } = Telegram.WebApp.initDataUnsafe.user;
 
-        // Select the username element
-        const usernameElement = document.querySelector('.username');
-
-        // Update the username dynamically
-        if (username) {
-            usernameElement.textContent = `${first_name} ${last_name} (@${username})`;
-        } else {
-            usernameElement.textContent = `${first_name} ${last_name} (No username set)`;
-        }
-    </script>
+    // Replace placeholder in the HTML
+    const usernameElement = document.querySelector('.username');
+    if (username) {
+        usernameElement.textContent = `@${username}`;
+    } else {
+        usernameElement.textContent = `${first_name} ${last_name} (No username set)`;
+    }
+</script>
     <style>
         .bg-gradient {
             background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
@@ -324,7 +323,7 @@
     <div class="flex items-center space-x-2 left-section">
         <img src="coin.jpg" alt="coin" class="coin-icon">
         <div>
-            <p class="username">Loading...</p>
+            <p class="username">%username%</p>
             <p class="level">Rookie</p>
         </div>
     </div>
