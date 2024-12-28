@@ -325,9 +325,11 @@
     }
 
     // Redirect to booster page when Boost Button is clicked
-    boostButton.addEventListener("click", () => {
-        window.location.href = "booster.html"; // Redirect to booster.html
-    });
+boostButton.addEventListener("click", () => {
+    // Always redirect to boost.html
+    window.location.href = "booster.html";
+});
+
 
     // Start filling after 3 seconds of inactivity
     setInterval(() => {
