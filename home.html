@@ -133,7 +133,90 @@
         .content-section.active {
             display: block; /* Show the active section */
         }
+        
+/* Animation for the popup rising from the bottom */
+@keyframes riseFromBottom {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
 
+/* Popup container styling */
+#walletPopup {
+    animation: riseFromBottom 0.4s ease-out; /* Smooth animation */
+    z-index: 50; /* Ensures it's above most elements */
+}
+
+/* Overlay styling */
+#overlay {
+    z-index: 40; /* Slightly lower than the popup */
+}
+
+    .wallet-container {
+      text-align: center;
+      padding: 20px;
+      background-color: #1e1e1e;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .wallet-container h2 {
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    .primary-button {
+      display: inline-block;
+      background-color: #3a86ff;
+      color: #fff;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+      border-radius: 5px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .primary-button:hover {
+      background-color: #3174d9;
+    }
+
+    .wallet-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .wallet-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .wallet-item img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-bottom: 5px;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 0.85rem;
+      color: #888;
+    }
+
+    .footer img {
+      vertical-align: middle;
+    }
     </style>
 </head>
 <body class="h-screen bg-gradient text-white">
@@ -177,6 +260,35 @@
             <button class="btn btn-outline">Wood</button>
             <button class="btn">Connect Wallet</button>
         </div>
+<!-- Overlay for Popup -->
+<div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 hidden z-40"></div>
+
+<!-- Popup for Connect Wallet -->
+<div id="walletPopup" class="fixed bottom-0 left-0 w-full bg-white p-8 rounded-t-lg shadow-lg text-black hidden z-50 animate-rise">
+    <!-- Close Button (Top Right Corner) -->
+    <button id="closePopupTopRight" class="absolute top-2 right-2 text-gray-500 hover:text-black font-bold text-xl">&times;</button>
+    
+    <h2 class="text-lg font-semibold mb-4">Connect Wallet</h2>
+    <p>Choose your wallet to connect:</p>
+    <a href="#" class="primary-button">Open Wallet in Telegram</a>
+    <div class="wallet-grid">
+      <div class="wallet-item">
+        <img src="tonkeeper.jpg" alt="Tonkeeper">
+        <span>Tonkeeper</span>
+      </div>
+      <div class="wallet-item">
+        <img src="mytonwallet.jpg" alt="MyTonWallet">
+        <span>MyTonWallet</span>
+      </div>
+      <div class="wallet-item">
+        <img src="tonhub.jpg" alt="Tonhub">
+        <span>Tonhub</span>
+      </div>
+    </div>
+    <div class="footer">
+      <span>TON Connect</span>
+    </div>
+  </div>
     </div>
 
     <!-- Coin Display -->
@@ -308,6 +420,26 @@
             }, 1000);
         }
     });
+
+   // Get the "Connect Wallet" button, popup, and close buttons
+const connectWalletButton = document.querySelector(".btn.btn:nth-child(2)"); // Second button in the buttons section
+const walletPopup = document.getElementById("walletPopup");
+const closePopupTopRight = document.getElementById("closePopupTopRight");
+const closePopupBottom = document.getElementById("closePopupBottom");
+
+// Show the popup when the "Connect Wallet" button is clicked
+connectWalletButton.addEventListener("click", () => {
+    walletPopup.classList.remove("hidden");
+});
+
+// Hide the popup when either close button is clicked
+closePopupTopRight.addEventListener("click", () => {
+    walletPopup.classList.add("hidden");
+});
+
+closePopupBottom.addEventListener("click", () => {
+    walletPopup.classList.add("hidden");
+});
 
     // Start filling the counter gradually when stopped tapping
     function startFilling() {

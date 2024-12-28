@@ -3,48 +3,196 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Boost Page</title>
+    <title>Boosters</title>
     <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1e1e2f; /* Dark background */
+            color: #ffffff; /* White text color */
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Booster item styling */
+        .booster-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #292942; /* Darker card background */
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .booster-icon {
+            font-size: 30px;
+            margin-right: 15px;
+        }
+
+        .booster-details {
+            flex-grow: 1;
+        }
+
+        .booster-details p {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .booster-price {
+            display: flex;
+            align-items: center;
+        }
+
+        .booster-price img {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+
+        .booster-action {
+            font-size: 20px;
+            color: #4CAF50; /* Green arrow color */
+            cursor: pointer;
+        }
+
+        .booster-action:hover {
+            color: #66bb6a;
+        }
+
+        /* Footer Navigation */
+        .footer-navigation {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .nav-links a {
+            margin: 0 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .nav-links a:active {
+            color: #ccc;
+        }
+
+        /* Error message styling */
         .error-message {
             color: red;
-            font-size: 1.2rem;
-            margin-top: 1rem;
-            display: none; /* Initially hidden */
+            text-align: center;
+            margin: 10px 0;
         }
     </style>
 </head>
 <body>
-    <h1>Boost Shop</h1>
-    <p>Use your points to unlock boosts and enhance your gameplay!</p>
-    <button id="purchase-boost">Purchase Boost</button>
-    <p class="error-message" id="error-message">You do not have enough points to buy any boost.</p>
+    <div class="container">
+        <h1>Boosters</h1>
+
+        <!-- Multitap Booster -->
+        <div class="booster-item">
+            <div class="booster-icon">✋</div>
+            <div class="booster-details">
+                <p>Multitap</p>
+                <p>200 <img src="coin-icon.jpg" alt="coin icon"> | 1 level</p>
+            </div>
+            <div class="booster-action">➔</div>
+        </div>
+
+        <!-- Energy Limit Booster -->
+        <div class="booster-item">
+            <div class="booster-icon">🔋</div>
+            <div class="booster-details">
+                <p>Energy Limit</p>
+                <p>200 <img src="coin-icon.jpg" alt="coin icon"> | 1 level</p>
+            </div>
+            <div class="booster-action">➔</div>
+        </div>
+
+        <!-- Recharging Speed Booster -->
+        <div class="booster-item">
+            <div class="booster-icon">⚡</div>
+            <div class="booster-details">
+                <p>Recharging Speed</p>
+                <p>2000 <img src="coin-icon.jpg" alt="coin icon"> | 1 level</p>
+            </div>
+            <div class="booster-action">➔</div>
+        </div>
+
+    <!-- Footer Navigation -->
+    <div class="footer-navigation">
+        <div class="nav-links">
+            <a href="home.html" id="home-button">Home</a>
+            <a href="tasks.html" id="tasks-button">Tasks</a>
+            <a href="account.html" id="account-button">Account</a>
+            <a href="drop.html" id="drop-button">Drop</a>
+        </div>
+    </div>
 
     <script>
-        // Retrieve total points from localStorage
-        let totalPoints = parseInt(localStorage.getItem("totalPoints")) || 0;
+        // Fetch the total points from localStorage
+        let totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
+        document.getElementById('total-points').textContent = totalPoints;
 
-        // Boost purchasing logic
-        const purchaseBoostButton = document.getElementById("purchase-boost");
-        const errorMessage = document.getElementById("error-message");
+        // Check if the user has enough points for the boosters
+        const tapLimitButton = document.getElementById('tap-limit-booster');
+        const tapLevelButton = document.getElementById('tap-level-booster');
+        const insufficientMessage = document.getElementById('insufficient-points-message');
 
-        purchaseBoostButton.addEventListener("click", () => {
-            // Example logic: Assume a minimum of 1000 points is needed for a boost
+        function updateButtons() {
             if (totalPoints < 1000) {
-                // Show the error message
-                errorMessage.style.display = "block";
-
-                // Optionally, hide the message after a delay (e.g., 3 seconds)
-                setTimeout(() => {
-                    errorMessage.style.display = "none";
-                }, 3000);
+                insufficientMessage.style.display = 'block';
+                tapLimitButton.disabled = true;
+                tapLevelButton.disabled = true;
             } else {
-                // Handle the boost purchase
-                totalPoints -= 1000; // Deduct points (adjust this logic as needed)
-                localStorage.setItem("totalPoints", totalPoints); // Save updated points
-                alert("Boost purchased successfully!"); // Success message (optional)
-                location.reload(); // Reload the page to reflect the changes (optional)
+                insufficientMessage.style.display = 'none';
+                tapLimitButton.disabled = false;
+                tapLevelButton.disabled = false;
+            }
+        }
+
+        // Handle Tap Limit Booster purchase
+        tapLimitButton.addEventListener('click', () => {
+            if (totalPoints >= 1000) {
+                totalPoints -= 1000;
+                localStorage.setItem('totalPoints', totalPoints);
+                document.getElementById('total-points').textContent = totalPoints;
+                alert('Tap Limit Booster purchased!');
+                updateButtons();
             }
         });
+
+        // Handle Tap Level Booster purchase
+        tapLevelButton.addEventListener('click', () => {
+            if (totalPoints >= 1000) {
+                totalPoints -= 1000;
+                localStorage.setItem('totalPoints', totalPoints);
+                document.getElementById('total-points').textContent = totalPoints;
+                alert('Tap Level Booster purchased!');
+                updateButtons();
+            }
+        });
+
+        updateButtons();
     </script>
 </body>
 </html>
