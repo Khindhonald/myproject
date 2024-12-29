@@ -20,6 +20,13 @@ const {
 } = window.Telegram.WebApp.initDataUnsafe.user;
     </script>
     <style>
+        body {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+
         .bg-gradient {
             background: linear-gradient(135deg, #1c1c1e, #2c2c2e);
         }
@@ -359,7 +366,7 @@ const {
 
 
     <!-- Floating Points Container -->
-    <div id="floating-points-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></div>
+    <div id="floating-points-container" style="position: center; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></div>
 
     <!-- Footer Navigation -->
 <div class="fixed bottom-0 w-full bg-gray-900 py-2">
@@ -388,212 +395,133 @@ const {
 </div>
 
 <script>
-    let totalPoints = 0;  // Total points earned from tapping
-    let coinCount = 500;  // Starting coin count (this will be updated based on localStorage)
-    let maxCoin = 500;    // Maximum coin count
-    let tapLimit = 1;     // Initial tap limit
-    let tapLevel = 500;   // Initial max coins (tap level)
+    let totalPoints = 0; // Total points earned from tapping
+    let coinCount = 500; // Starting coin count
+    let maxCoin = 500; // Maximum coin count
+    let level = parseInt(localStorage.getItem('level')) || 1; // User level, default to 1
+    let tapIncrement = parseInt(localStorage.getItem('tapIncrement')) || 1; // Points per tap
+    let lastRefillTime = parseInt(localStorage.getItem('lastRefillTime')) || Date.now(); // Last refill time
     let fillInterval;
-    let lastTapTime = Date.now(); // Track the last tap time
+
+    // DOM elements
     const totalPointsElement = document.getElementById("total-points");
     const coinCounterElement = document.getElementById("coin-counter");
     const coinButton = document.getElementById("coin-button");
-    const boostButton = document.getElementById("boost-button"); // Boost button
-
-    // Progress bar and levels
-    const maxPointsPerLevel = 1000; // Points required to fill the progress bar
-    const levels = ["Rookie", "Explorer", "Adventurer", "Specialist", "Elite", "Veteran", "Champion", "Master", "Legendary"];
-    let currentLevelIndex = 0; // Start from the first level
-
-    // DOM elements
-    const progressElement = document.getElementById("progress"); // Progress bar element
-    const levelElement = document.getElementById("level"); // Level display element
 
     // Load data from localStorage
     function loadDataFromLocalStorage() {
         totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
-        coinCount = parseInt(localStorage.getItem('coinCount')) || 500; // Load the last coin count
-        lastTapTime = parseInt(localStorage.getItem('lastTapTime')) || Date.now(); // Load last tap time
-        const lastRefillTime = parseInt(localStorage.getItem('lastRefillTime')) || Date.now(); // Load last refill time
+        coinCount = parseInt(localStorage.getItem('coinCount')) || 500;
+        level = parseInt(localStorage.getItem('level')) || 1;
+        lastRefillTime = parseInt(localStorage.getItem('lastRefillTime')) || Date.now();
 
-        // Calculate the time passed since last interaction (in seconds)
-        const timeElapsed = Math.floor((Date.now() - lastRefillTime) / 1000);
-
-        // Resume the refill based on the time elapsed
+        // Refill coins based on time elapsed since last refill
+        const timeElapsed = Math.floor((Date.now() - lastRefillTime) / 1000); // Time in seconds
         if (coinCount < maxCoin) {
-            const refillAmount = timeElapsed; // Refill by 1 coin per second
-            coinCount = Math.min(coinCount + refillAmount, maxCoin); // Cap to maxCoin
-            updateCoinCounter();
-        }
-
-        // Check if refill was already in progress
-        if (coinCount < maxCoin && !fillInterval) {
-            startFilling(); // Resume filling if not already refilling
+            const refillAmount = Math.min(timeElapsed, maxCoin - coinCount); // Coins to refill
+            coinCount += refillAmount;
         }
     }
 
     // Save data to localStorage
     function saveDataToLocalStorage() {
         localStorage.setItem('totalPoints', totalPoints);
-        localStorage.setItem('coinCount', coinCount); // Save the current coin count
-        localStorage.setItem('lastTapTime', Date.now()); // Save the last tap time
-        localStorage.setItem('lastRefillTime', Date.now()); // Save the last refill time
+        localStorage.setItem('coinCount', coinCount);
+        localStorage.setItem('level', level);
+        localStorage.setItem('lastRefillTime', Date.now());
     }
 
     // Update the coin counter display
     function updateCoinCounter() {
-        coinCounterElement.textContent = `⚡${coinCount}/500`;
+        coinCounterElement.textContent = `⚡${coinCount}/${maxCoin}`;
+        coinButton.disabled = coinCount <= 0; // Disable button if no coins left
     }
 
-    // Update the tap counter
+    // Update the total points display
     function updateTotalPoints() {
         totalPointsElement.textContent = totalPoints.toLocaleString();
     }
 
-    // Add floating "+1" animation on each tap
+  // Add floating "+X" animation on each tap, inside the pill button
+function showFloatingPoints(event, pointsEarned) {
+    const pillButton = document.getElementById("coin-button");  // Get the pill button element
+    const floatingText = document.createElement("div");
+    floatingText.textContent = `+${pointsEarned}`;
+    floatingText.classList.add("floating-point"); // Add the class for animation
+
+    // Get pill button's position and size
+    const rect = pillButton.getBoundingClientRect();
+
+    // Position the floating text relative to the pill button's position
+    const x = event.clientX - rect.left; // Horizontal position relative to the button
+    const y = event.clientY - rect.top;  // Vertical position relative to the button
+
+    floatingText.style.left = `${x}px`;
+    floatingText.style.top = `${y}px`;
+
+    // Append floating text to the pill button
+    pillButton.appendChild(floatingText);
+
+    // Remove the floating text after the animation is complete
+    setTimeout(() => {
+        floatingText.remove();
+    }, 1000); // Match the duration of the transition
+}
+
+    // Handle tap on the coin button
     coinButton.addEventListener("click", (event) => {
-        if (coinCount > 0) {
-            // Increase total points and decrease coin count
-            totalPoints += tapLimit;
-            coinCount -= 1;
+        if (coinCount >= tapIncrement) {
+            const pointsEarned = tapIncrement; // Points per tap including boosters
+            totalPoints += pointsEarned;
+            coinCount -= tapIncrement; // Reduce coin count based on tapIncrement
+
             updateTotalPoints();
             updateCoinCounter();
-
-            // Save the updated points and coin count to localStorage
             saveDataToLocalStorage();
 
-            if (fillInterval) {
-                clearInterval(fillInterval); // Stop the current filling
-                fillInterval = null; // Reset interval state
-            }
-            lastTapTime = Date.now(); // Update the last tap time
-
-            // Create a new floating +1 element
-            const floatingText = document.createElement("div");
-            floatingText.textContent = `+${tapLimit}`;
-            floatingText.style.position = "absolute";
-
-            // Get the position of the click relative to the button
-            const rect = coinButton.getBoundingClientRect();
-            const x = event.clientX - rect.left; // X position within the button
-            const y = event.clientY - rect.top; // Y position within the button
-
-            // Set initial styles for the floating +1
-            floatingText.style.left = `${x}px`;
-            floatingText.style.top = `${y}px`;
-            floatingText.style.fontSize = "24px";
-            floatingText.style.fontWeight = "bold";
-            floatingText.style.color = "white";
-            floatingText.style.transition = "all 1s ease-out";
-            floatingText.style.pointerEvents = "none";
-
-            // Append the floating +1 to the coin button
-            coinButton.appendChild(floatingText);
-
-            // Animate the floating +1
-            setTimeout(() => {
-                floatingText.style.opacity = "0";
-                floatingText.style.transform = "translateY(-50px)";
-            }, 10);
-
-            // Remove the floating +1 after the animation ends
-            setTimeout(() => {
-                coinButton.removeChild(floatingText);
-            }, 1000);
+            showFloatingPoints(event, pointsEarned);
         }
     });
 
-    // Start filling the counter gradually when stopped tapping
+    // Start filling coins gradually
     function startFilling() {
-        // Only start filling if it's not already refilling
         if (!fillInterval) {
             fillInterval = setInterval(() => {
                 if (coinCount < maxCoin) {
-                    coinCount += 1; // Increase by 1 every second
-                    updateCoinCounter(); // Update the coin counter display
-
-                    // Save the updated coin count to localStorage
+                    coinCount += 1; // Refill 1 coin per second
+                    updateCoinCounter();
                     saveDataToLocalStorage();
                 } else {
-                    clearInterval(fillInterval); // Stop when coin count reaches maxCoin (500)
-                    fillInterval = null; // Reset interval state
+                    clearInterval(fillInterval);
+                    fillInterval = null;
                 }
-            }, 1000); // Update every second
+            }, 1000);
         }
     }
 
-    // Redirect to booster page when Boost Button is clicked
-    boostButton.addEventListener("click", () => {
-        // Always redirect to boost.html
-        window.location.href = "booster.html";
-    });
-
-    // Start filling after 3 seconds of inactivity
-    setInterval(() => {
-        if (Date.now() - lastTapTime > 3000 && coinCount < maxCoin && !fillInterval) {
-            startFilling(); // Start filling after 3 seconds of inactivity
-        }
-    }, 1000);
-
-    // Disable or enable the tap button based on coin count
-    function checkButtonState() {
-        if (coinCount === 0) {
-            coinButton.disabled = true; // Disable the button if no coins are available
-            coinButton.style.opacity = "0.5"; // Optionally, change opacity for visual feedback
-        } else {
-            coinButton.disabled = false; // Enable the button if there are coins
-            coinButton.style.opacity = "1"; // Restore normal opacity
-        }
+    // Function to level up
+    function levelUp() {
+        level += 1; // Increment level
+        tapIncrement += 1; // Increase tap increment with level
+        saveDataToLocalStorage();
     }
 
-    // Handle boost purchases (using total points)
-    boostButton.addEventListener("click", () => {
-        if (totalPoints >= 3500) {
-            // Level 5 boost (3500 points)
-            tapLimit += 5;
-            maxCoin += 500;
-            tapLevel += 500;
-            totalPoints -= 3500;
-            alert(`You've unlocked Level 5 Boost! Tap Limit: ${tapLimit}, Max Coins: ${maxCoin}`);
-        } else if (totalPoints >= 3000) {
-            // Level 4 boost (3000 points)
-            tapLimit += 4;
-            maxCoin += 400;
-            tapLevel += 400;
-            totalPoints -= 3000;
-            alert(`You've unlocked Level 4 Boost! Tap Limit: ${tapLimit}, Max Coins: ${maxCoin}`);
-        } else if (totalPoints >= 2500) {
-            // Level 3 boost (2500 points)
-            tapLimit += 3;
-            maxCoin += 300;
-            tapLevel += 300;
-            totalPoints -= 2500;
-            alert(`You've unlocked Level 3 Boost! Tap Limit: ${tapLimit}, Max Coins: ${maxCoin}`);
-        } else if (totalPoints >= 2000) {
-            // Level 2 boost (2000 points)
-            tapLimit += 2;
-            maxCoin += 200;
-            tapLevel += 200;
-            totalPoints -= 2000;
-            alert(`You've unlocked Level 2 Boost! Tap Limit: ${tapLimit}, Max Coins: ${maxCoin}`);
-        } else if (totalPoints >= 1000) {
-            // Level 1 boost (1000 points)
-            tapLimit += 1;
-            maxCoin += 100;
-            tapLevel += 100;
-            totalPoints -= 1000;
-            alert(`You've unlocked Level 1 Boost! Tap Limit: ${tapLimit}, Max Coins: ${maxCoin}`);
-        }
+    // Initialize the app
+    function initialize() {
+        loadDataFromLocalStorage();
+        updateCoinCounter();
+        updateTotalPoints();
 
-        saveDataToLocalStorage(); // Save data after purchase
-        updateTotalPoints(); // Update total points display after purchase
-        updateCoinCounter();  // Update coin counter display after purchase
-    });
+        // Refill coins every second if below maxCoin
+        setInterval(() => {
+            if (coinCount < maxCoin) {
+                startFilling();
+            }
+        }, 3000);
+    }
 
-    // Initialize coin counter, total points, and check the button state
-    loadDataFromLocalStorage(); // Load total points and coin count from localStorage
-    updateCoinCounter();
-    updateTotalPoints();
+    // Start the app
+    initialize();
 </script>
 </body>
 </html>

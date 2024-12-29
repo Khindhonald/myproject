@@ -5,39 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Ensure the body and html take the full height */
+        html, body {
+            height: 100%; /* Full screen height */
+            margin: 0; /* Remove default margin */
+        }
+
+        /* Flexbox layout for the body */
+        body {
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            justify-content: space-between; /* Distribute space evenly */
+        }
+
+        /* Footer styles */
+        .footer-navigation {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        /* Navigation link styles */
+        .nav-links a {
+            margin-left: 20px;
+            margin: 10px 10px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .nav-links a:active {
+            color: #ccc;
+        }
+
+        /* Account content styles */
+        .account-container {
+            padding: 20px;
+            text-align: left;
+        }
+
+        .referral-container {
+            margin-top: 20px;
+        }
+
+        .referred-users {
+            margin-top: 20px;
+        }
+
+        .referred-users ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .referred-users li {
+            margin-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
-    <style>
-        .footer-navigation {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    background-color: #333;
-    color: white;
-    padding: 10px 0;
-    text-align: left; /* Aligns content to the left */
-    padding-left: 20px; /* Adds padding to shift content further from the left edge */
-}
-
-.nav-links {
-    display: inline-block; /* Ensures the links stay in a horizontal row */
-}
-
-.nav-links a {
-    margin: 0 10px;
-    color: white;
-    text-decoration: none;
-    font-size: 18px;
-}
-
-.nav-links a:hover {
-    text-decoration: underline;
-}
-
-.nav-links a:active {
-    color: #ccc;
-}
-    </style>
     <div class="account-container">
         <h1>Account Page</h1>
 
@@ -49,6 +83,15 @@
             </p>
         </div>
 
+        <!-- Displaying referred users -->
+        <div class="referred-users">
+            <h3>Invited Users:</h3>
+            <ul id="referred-list">
+                <!-- Referred users will be populated here via script -->
+            </ul>
+        </div>
+    </div>
+
     <!-- Footer Navigation -->
     <div class="footer-navigation">
         <div class="nav-links">
@@ -59,22 +102,18 @@
         </div>
     </div>
 
-      <!-- Displaying referred users -->
-      <div class="referred-users">
-        <h3>Invited Users:</h3>
-        <ul id="referred-list">
-        </ul>
-    </div>
-</div>
+    <script>
+        // Sample referred users array (you can replace this with actual data)
+        const referredUsers = ["User1", "User2", "User3"];
 
-<script>
-    const referredListElement = document.getElementById("referred-list");
+        const referredListElement = document.getElementById("referred-list");
 
-    referredUsers.forEach((user) => {
-        const li = document.createElement("li");
-        li.textContent = user;
-        referredListElement.appendChild(li);
-    });
-</script>
+        // Populate the referred users list
+        referredUsers.forEach((user) => {
+            const li = document.createElement("li");
+            li.textContent = user;
+            referredListElement.appendChild(li);
+        });
+    </script>
 </body>
 </html>
