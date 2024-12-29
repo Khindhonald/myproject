@@ -4,14 +4,253 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Drop Section</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* General styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1e1e2f; /* Dark theme */
+            color: #ffffff; /* White text */
+        }
+
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #007bff; /* Blue button */
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition */
+        }
+
+        /* Hover effect on the button */
+        button:hover {
+            transform: scale(1.05); /* Slightly enlarge the button */
+        }
+
+        /* Popup modal styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 90%;
+            background-color: #292942; /* Darker background for the modal */
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            padding: 40px 20px; /* Increase the padding to make the modal taller */
+            z-index: 1000;
+            animation: rise-up 0.5s ease-out; /* Rising animation */
+            height: 50%; /* Increase height to extend the popup */
+        }
+
+        /* Animation for rising effect */
+        @keyframes rise-up {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        /* Modal content styles */
+        .modal-content {
+            text-align: center;
+            color: white;
+        }
+
+        .wallet-options {
+            display: flex; /* Use flexbox to align items in a row */
+            justify-content: flex-start; /* Align items to the left */
+            flex-wrap: wrap; /* Allow images to wrap if there's not enough space */
+            gap: 10px; /* Space between images */
+            margin-top: 20px;
+        }
+
+        .wallet-options img {
+            width: 80px; /* Adjust size for uniformity */
+            height: 80px;
+            border-radius: 20px; /* Creates the rounded rectangular shape */
+            object-fit: cover; /* Ensures the image fits inside the box without distortion */
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Add depth with a shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth animation for hover effects */
+        }
+
+        .wallet-options img:hover {
+            transform: scale(1.1); /* Slight zoom effect on hover */
+            box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4); /* Enhance shadow on hover */
+        }
+
+        /* Styling for the walletintelegram.jpg image as an icon */
+        .open-wallet-button img.button-icon {
+            width: 280px; /* Set a small size for the icon */
+            height: 50px; /* Keep it square */
+            border-radius: 10px; /* Make it circular like an icon */
+            object-fit: cover; /* Ensure the image covers the entire area */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Add subtle shadow for depth */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover animation */
+        }
+
+        .open-wallet-button img.button-icon:hover {
+            transform: scale(1.1); /* Slight zoom effect on hover */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Enhance shadow on hover */
+        }
+
+        .open-wallet-button {
+            display: inline-block; /* Make the link behave like an inline element */
+            text-decoration: none; /* Remove any underlining */
+            padding: 5px; /* Optional padding to create some space around the icon */
+        }
+
+        .modal-header {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .modal-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin: 10px 0;
+        }
+
+        /* Close button inside the container */
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background-color: transparent;
+            border: none;
+            color: white;
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        /* Footer styles */
+        .footer-navigation {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+
+        .nav-links a {
+            margin: 0 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .nav-links a:active {
+            color: #ccc;
+        }
+
+        /* TON Connect styles */
+        .ton-connect-content {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* Aligns to the left */
+            background-color: #292942; /* Dark gray background */
+            padding: 10px 20px;
+            width: 100%; /* Full width */
+            box-sizing: border-box; /* Includes padding in width */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow for depth */
+            margin-top: 50px; /* Adds space between the wallet options and TON connect section */
+        }
+
+        .ton-connect-content .icon {
+            display: flex;
+            align-items: center;
+        }
+
+        .ton-connect-content img {
+            width: 20px; /* Adjust icon size */
+            height: 20px;
+            margin-right: 10px;
+            border-radius: 50%; /* Circular icon */
+            background-color: #007bff; /* Blue background for icon */
+            padding: 5px;
+        }
+
+        .ton-connect-content .text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
+        .ton-connect-content .help-icon {
+            font-size: 20px;
+            color: #ffffff;
+            background-color: #3e3e52; /* Slightly darker background */
+            border-radius: 50%; /* Circular button */
+            width: 25px;
+            height: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin-left: 125px;
+        }
+
+        .ton-connect-content .help-icon:hover {
+            background-color: #5a5a7a; /* Lighter on hover */
+        }
+    </style>
 </head>
 <body>
     <div class="content">
         <h2>Drop Section</h2>
-        <button class="btn">Connect Wallet</button>
-    </div>"
+        <button id="connect-wallet-btn">Connect Wallet</button>
         <p>Content related to the Drop section goes here.</p>
+    </div>
+
+    <!-- Modal for Connect Wallet -->
+    <div class="modal" id="wallet-modal">
+        <button class="close-modal" id="close-modal">&times;</button>
+        <div class="modal-content">
+            <h2 class="modal-header">Connect Your Wallet</h2>
+            <p>Open Wallet in Telegram or select your wallet to connect:</p>
+            <a href="#" class="open-wallet-button">
+                <img src="walletintelegram.jpg" alt="Open Wallet in Telegram" class="button-icon">
+            </a>          
+            <div class="wallet-options">
+                <a href="#" class="icon-button">
+                    <img src="apple-touch-icon.png" alt="Tonkeeper">
+                </a>
+                <img src="mytonwallet.png" alt="MyTonWallet">
+                <img src="tonhub.jpg" alt="Tonhub">
+                <img src="bitgetwallet.jpg" alt="Bitget Wallet">
+            </div>
+
+            <!-- TON Connect content moved into the modal -->
+            <div class="ton-connect-content">
+                <div class="icon">
+                    <img src="ton-logo.jpg" alt="TON Icon">
+                    <span class="text">TON Connect</span>
+                </div>
+                <div class="help-icon">
+                    ?
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Footer Navigation -->
@@ -23,5 +262,29 @@
             <a href="drop.html" id="drop-button">Drop</a>
         </div>
     </div>
+
+    <script>
+        // Modal handling
+        const connectWalletButton = document.getElementById('connect-wallet-btn');
+        const walletModal = document.getElementById('wallet-modal');
+        const closeModal = document.getElementById('close-modal');
+
+        // Open the modal when "Connect Wallet" is clicked
+        connectWalletButton.addEventListener('click', () => {
+            walletModal.style.display = 'block';
+        });
+
+        // Close the modal when the close button is clicked
+        closeModal.addEventListener('click', () => {
+            walletModal.style.display = 'none';
+        });
+
+        // Close the modal when clicking outside the modal content
+        window.addEventListener('click', (event) => {
+            if (event.target === walletModal) {
+                walletModal.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>
