@@ -408,34 +408,78 @@ const {
     const coinCounterElement = document.getElementById("coin-counter");
     const coinButton = document.getElementById("coin-button");
 
-    // Load data from localStorage
-    function loadDataFromLocalStorage() {
-        totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
-        coinCount = parseInt(localStorage.getItem('coinCount')) || 500;
-        level = parseInt(localStorage.getItem('level')) || 1;
-        lastRefillTime = parseInt(localStorage.getItem('lastRefillTime')) || Date.now();
+    let rechargingSpeed = parseInt(localStorage.getItem('rechargingSpeed')) || 1; // Default refill rate is +1
 
-        // Refill coins based on time elapsed since last refill
-        const timeElapsed = Math.floor((Date.now() - lastRefillTime) / 1000); // Time in seconds
+// Load data from localStorage
+function loadDataFromLocalStorage() {
+    totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
+    coinCount = parseInt(localStorage.getItem('coinCount')) || 500;
+    maxCoin = parseInt(localStorage.getItem('maxCoin')) || 500;
+    rechargingSpeed = parseInt(localStorage.getItem('rechargingSpeed')) || 1; // Load recharging speed
+    level = parseInt(localStorage.getItem('level')) || 1;
+    lastRefillTime = parseInt(localStorage.getItem('lastRefillTime')) || Date.now();
+
+     // Refill coins based on time elapsed since last refill
+     const timeElapsed = Math.floor((Date.now() - lastRefillTime) / 1000); // Time in seconds
+    if (coinCount < maxCoin) {
+        const refillAmount = Math.min(timeElapsed * rechargingSpeed, maxCoin - coinCount); // Use rechargingSpeed
+        coinCount += refillAmount;
+    }
+
+    // Update the displayed maxCoin value
+    updateCoinCounter();
+}
+
+// Start filling coins gradually
+function startFilling() {
+    if (!fillInterval) {
+        fillInterval = setInterval(() => {
+            if (coinCount < maxCoin) {
+                coinCount += rechargingSpeed; // Refill based on current recharging speed
+                if (coinCount > maxCoin) coinCount = maxCoin; // Prevent overflow
+                updateCoinCounter();
+                saveDataToLocalStorage();
+            } else {
+                clearInterval(fillInterval);
+                fillInterval = null;
+            }
+        }, 1000);
+    }
+}
+
+// Update the coin counter display
+function updateCoinCounter() {
+    coinCounterElement.textContent = `⚡${coinCount}/${maxCoin}`; // Display updated maxCoin value
+    coinButton.disabled = coinCount <= 0; // Disable button if no coins left
+}
+
+// Save data to localStorage
+function saveDataToLocalStorage() {
+    localStorage.setItem('totalPoints', totalPoints);
+    localStorage.setItem('coinCount', coinCount);
+    localStorage.setItem('maxCoin', maxCoin);
+    localStorage.setItem('rechargingSpeed', rechargingSpeed); // Save recharging speed
+    localStorage.setItem('level', level);
+    localStorage.setItem('lastRefillTime', Date.now());
+}
+
+
+// Initialize the app
+function initialize() {
+    loadDataFromLocalStorage(); // Load data and ensure maxCoin is updated
+    updateCoinCounter();
+    updateTotalPoints();
+
+    // Refill coins every second if below maxCoin
+    setInterval(() => {
         if (coinCount < maxCoin) {
-            const refillAmount = Math.min(timeElapsed, maxCoin - coinCount); // Coins to refill
-            coinCount += refillAmount;
+            startFilling();
         }
-    }
+    }, 3000);
+}
 
-    // Save data to localStorage
-    function saveDataToLocalStorage() {
-        localStorage.setItem('totalPoints', totalPoints);
-        localStorage.setItem('coinCount', coinCount);
-        localStorage.setItem('level', level);
-        localStorage.setItem('lastRefillTime', Date.now());
-    }
-
-    // Update the coin counter display
-    function updateCoinCounter() {
-        coinCounterElement.textContent = `⚡${coinCount}/${maxCoin}`;
-        coinButton.disabled = coinCount <= 0; // Disable button if no coins left
-    }
+// Start the app
+initialize();
 
     // Update the total points display
     function updateTotalPoints() {
