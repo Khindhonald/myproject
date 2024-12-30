@@ -566,6 +566,13 @@ function showFloatingPoints(event, pointsEarned) {
 
     // Start the app
     initialize();
+
+     // Load total points from localStorage
+     document.addEventListener("DOMContentLoaded", function () {
+            const pointsElement = document.getElementById("total-points");
+            const totalPoints = localStorage.getItem("totalPoints") || 0; // Default to 0 if no points
+            pointsElement.textContent = totalPoints;
+        });
 </script>
 </body>
 </html>

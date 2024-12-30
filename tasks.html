@@ -3,18 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tasks Section</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Join QuirkCoin Telegram</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: white;
+        }
+
+        .content {
+            padding: 20px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        #task-container {
+            background-color: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        #task-container p {
+            margin: 0;
+            font-size: 16px;
+            color: #d1d1d1;
+        }
+
+        #task-container button {
+            padding: 10px 20px;
+            background-color: #3a86ff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        #task-container button:hover {
+            background-color: #3266cc;
+        }
+
+        #task-container button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+
+        .footer-navigation {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #1e1e1e;
+            padding: 10px 0;
+        }
+
+        .footer-navigation .nav-links {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .footer-navigation .nav-links a {
+            text-decoration: none;
+            color: #d1d1d1;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-navigation .nav-links a:hover {
+            color: #3a86ff;
+        }
+
+        /* General container styling */
+.content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 15px;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    color: white;
+    width: 100%;  /* This makes the container fit the screen */
+    max-width: 100%;  /* Ensure it doesn't overflow the screen */
+    box-sizing: border-box;  /* Include padding in the width calculation */
+}
+
+/* Telegram Logo container */
+.logo-container {
+    margin-left: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: #0088cc;
+    border-radius: 8px;
+}
+
+.logo {
+    width: 40px;
+    height: 24px;
+}
+
+/* Task Description */
+.task-description {
+    flex-grow: 1; /* Makes the task description take the remaining space */
+}
+
+.task-description h2 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.task-description p {
+    margin: 0;
+    font-size: 14px;
+    color: #aaa;
+}
+
+/* Task Button */
+.task-button {
+    background: none;
+    border: 1px solid #fff;
+    border-radius: 5px;
+    color: white;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.task-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+    </style>
 </head>
 <body>
     <div class="content">
-        <h2>Tasks Section</h2>
-        <div id="task-list">
-            <!-- Dynamic task content will be added here -->
+        <!-- Telegram Logo -->
+        <div class="logo-container">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram Logo" class="logo">
         </div>
+    
+        <!-- Task Description -->
+        <div class="task-description">
+            <h2>Follow Channel</h2>
+            <p>+1,000</p>
+        </div>
+    
+        <!-- Task Button -->
+        <button id="task-button" class="task-button">
+            Start
+        </button>
     </div>
+    
 
-    <!-- Footer Navigation -->
     <div class="footer-navigation">
         <div class="nav-links">
             <a href="home.html" id="home-button">Home</a>
@@ -24,6 +177,57 @@
         </div>
     </div>
 
-    <script src="tasks.js"></script>
+   <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const taskButton = document.getElementById("task-button");
+        const taskKey = "taskCompleted"; // Key to store task state in localStorage
+        const taskRewardPoints = 1000; // Points to reward for completing the task
+
+        // Function to check task completion status
+        function checkTaskCompletion() {
+            const taskCompleted = localStorage.getItem(taskKey) === "true";
+            if (taskCompleted) {
+                taskButton.textContent = "Completed";
+                taskButton.disabled = true;
+            } else {
+                taskButton.textContent = "Start";
+                taskButton.disabled = false;
+            }
+        }
+
+        // Function to complete the task
+        function completeTask() {
+            if (taskButton.textContent === "Start") {
+                taskButton.textContent = "In Progress...";
+                taskButton.disabled = true;
+
+                // Simulate task completion after 3 seconds
+                setTimeout(() => {
+                    taskButton.textContent = "Claim";
+                    taskButton.disabled = false;
+                }, 3000);
+            } else if (taskButton.textContent === "Claim") {
+                // Reward the user with points
+                let totalPoints = parseInt(localStorage.getItem("totalPoints")) || 0;
+                totalPoints += taskRewardPoints;
+                localStorage.setItem("totalPoints", totalPoints);
+
+                // Mark the task as completed
+                localStorage.setItem(taskKey, "true");
+
+                // Update the UI
+                alert("You have joined the QuirkCoin Telegram channel and earned 5000 points!");
+                checkTaskCompletion();
+            }
+        }
+
+        // Event listener for the task button
+        taskButton.addEventListener("click", completeTask);
+
+        // Initialize task state on page load
+        checkTaskCompletion();
+    });
+</script>
+
 </body>
 </html>
