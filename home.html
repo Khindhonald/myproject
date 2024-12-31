@@ -430,22 +430,36 @@ function loadDataFromLocalStorage() {
     updateCoinCounter();
 }
 
-// Start filling coins gradually
-function startFilling() {
-    if (!fillInterval) {
-        fillInterval = setInterval(() => {
-            if (coinCount < maxCoin) {
-                coinCount += rechargingSpeed; // Refill based on current recharging speed
-                if (coinCount > maxCoin) coinCount = maxCoin; // Prevent overflow
-                updateCoinCounter();
-                saveDataToLocalStorage();
-            } else {
-                clearInterval(fillInterval);
-                fillInterval = null;
-            }
-        }, 1000);
+// Load data from localStorage
+function loadDataFromLocalStorage() {
+    totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
+    coinCount = parseInt(localStorage.getItem('coinCount')) || 500;
+    maxCoin = parseInt(localStorage.getItem('maxCoin')) || 500;
+    level = parseInt(localStorage.getItem('level')) || 1; // User level
+    lastRefillTime = parseInt(localStorage.getItem('lastRefillTime')) || Date.now();
+
+    // Base recharging speed
+    let baseRechargingSpeed = parseFloat(localStorage.getItem('rechargingSpeed')) || 1;
+
+    // Adjust recharging speed based on the user's level
+    if (level === 2) {
+        rechargingSpeed = baseRechargingSpeed * 1.5; // Level 2: 1.5x speed
+    } else if (level >= 3) {
+        rechargingSpeed = baseRechargingSpeed * 3; // Level 3 or higher: 3x speed
+    } else {
+        rechargingSpeed = baseRechargingSpeed; // Default speed
     }
+
+    // Calculate time elapsed since last refill
+    const timeElapsed = Math.floor((Date.now() - lastRefillTime) / 1000); // Time in seconds
+    if (coinCount < maxCoin) {
+        const refillAmount = Math.min(timeElapsed * rechargingSpeed, maxCoin - coinCount);
+        coinCount += refillAmount;
+    }
+
+    updateCoinCounter();
 }
+
 
 // Update the coin counter display
 function updateCoinCounter() {
@@ -573,6 +587,13 @@ function showFloatingPoints(event, pointsEarned) {
             const totalPoints = localStorage.getItem("totalPoints") || 0; // Default to 0 if no points
             pointsElement.textContent = totalPoints;
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+    const pointsElement = document.getElementById("total-points");
+    const totalPoints = localStorage.getItem("totalPoints") || 0; // Default to 0 if no points
+    pointsElement.textContent = totalPoints;
+});
+
 </script>
 </body>
 </html>

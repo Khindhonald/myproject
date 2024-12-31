@@ -399,25 +399,13 @@ const energyPopupOverlay = document.getElementById('energy-popup-overlay');
 const confirmPurchaseButton = document.getElementById('confirm-purchase');
 const confirmEnergyPurchaseButton = document.getElementById('confirm-energy-purchase');
 
+// Show the recharging popup when clicking on the booster item
 document.getElementById('recharging-speed-booster').addEventListener('click', () => {
-    const rechargingSpeedPrice = parseInt(localStorage.getItem('rechargingSpeedPrice')) || 10000; // Default price
-    if (totalPoints >= rechargingSpeedPrice) {
-        totalPoints -= rechargingSpeedPrice; // Deduct points
-        rechargingSpeed += 1; // Increase recharging speed
-        const newPrice = Math.ceil(rechargingSpeedPrice * 1.5); // Increase price for next level
-
-        // Save updated values in localStorage
-        localStorage.setItem('totalPoints', totalPoints);
-        localStorage.setItem('rechargingSpeed', rechargingSpeed);
-        localStorage.setItem('rechargingSpeedPrice', newPrice);
-
-        updatePointsDisplay();
-
-        alert(`Recharging Speed upgraded! New refill rate: +${rechargingSpeed} coins/second`);
-    } else {
-        alert('Not enough points to purchase this booster.');
-    }
+    // Set the price in the popup before showing
+    document.getElementById('recharge-popup-cost').textContent = rechargeSpeedPrice;
+    rechargePopupOverlay.style.display = 'flex'; // Show the overlay
 });
+
 
 // Show the multitap popup when clicking on the booster item
 document.getElementById('multitap-booster').addEventListener('click', () => {
@@ -495,28 +483,33 @@ energyPopupOverlay.addEventListener('click', (event) => {
     }
 });
 
-
 // Initialize variables for recharging speed
 let rechargeSpeed = parseFloat(localStorage.getItem('rechargeSpeed')) || 1;
 let rechargeSpeedPrice = parseInt(localStorage.getItem('rechargeSpeedPrice')) || 2000; // Set to 2000 initially
 
 // Update recharging speed details
 const updateRechargeSpeedDetails = () => {
-    document.getElementById('recharge-speed-price').innerHTML = `${rechargeSpeedPrice} <img src="coin-icon.jpg" alt="coin icon"> | Speed x${rechargeSpeed}`;
+    document.getElementById('recharging-speed-price').innerHTML = `${rechargeSpeedPrice} <img src="coin-icon.jpg" alt="coin icon"> | Speed x${rechargeSpeed}`;
 };
 updateRechargeSpeedDetails();
 
 const rechargePopupOverlay = document.getElementById('recharge-popup-overlay');
 const confirmRechargePurchaseButton = document.getElementById('confirm-recharge-purchase');
 
-// Show the recharging speed popup
-document.getElementById('recharge-speed-booster').addEventListener('click', () => {
+// Show the recharging speed popup immediately when the user taps the button
+document.getElementById('recharging-speed-booster').addEventListener('click', () => {
+    // Set the price in the popup before showing
     document.getElementById('recharge-popup-cost').textContent = rechargeSpeedPrice;
-    rechargePopupOverlay.style.display = 'flex'; // Display the recharging overlay
+
+    // Show the recharging overlay (popup)
+    rechargePopupOverlay.style.display = 'flex';
 });
 
 // Handle purchase for recharging speed
 confirmRechargePurchaseButton.addEventListener('click', () => {
+    // Retrieve the current total points from localStorage
+    let totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
+
     console.log(`Checking purchase... Total Points: ${totalPoints}, Recharge Speed Price: ${rechargeSpeedPrice}`);
 
     // Check if user has enough points for the recharging speed upgrade
@@ -525,8 +518,8 @@ confirmRechargePurchaseButton.addEventListener('click', () => {
         totalPoints -= rechargeSpeedPrice;
         rechargeSpeed += 0.5; // Increase recharge speed by 0.5
 
-        // Increase the price for next level by 1500 (instead of multiplying by 1.5)
-        rechargeSpeedPrice += 1500; // Increase by 1500 after each purchase
+        // Increase the price for the next level by 2000
+        rechargeSpeedPrice += 2000; // Increase by 2000 after each purchase
 
         // Save updated values in localStorage
         localStorage.setItem('totalPoints', totalPoints);
@@ -536,12 +529,18 @@ confirmRechargePurchaseButton.addEventListener('click', () => {
         // Update the UI with new values
         updatePointsDisplay();
         updateRechargeSpeedDetails();
-        rechargePopupOverlay.style.display = 'none'; // Hide the popup
 
+        // Close the popup
+        rechargePopupOverlay.style.display = 'none';
+
+        // Alert the user that the upgrade was successful
         alert(`Recharging Speed upgraded! Your new speed is x${rechargeSpeed}.`);
     } else {
-        // Show alert if the user doesn't have enough points
+        // Show alert if the user doesn't have enough points after clicking "Confirm"
         alert('Not enough points to purchase this booster.');
+        
+        // Close the popup regardless of insufficient balance
+        rechargePopupOverlay.style.display = 'none';
     }
 });
 

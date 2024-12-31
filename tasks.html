@@ -149,6 +149,7 @@
     </style>
 </head>
 <body>
+    <!-- Task 1: Follow Channel -->
     <div class="content">
         <!-- Telegram Logo -->
         <div class="logo-container">
@@ -162,11 +163,29 @@
         </div>
     
         <!-- Task Button -->
-        <button id="task-button" class="task-button">
+        <button id="task-button-1" class="task-button">
             Start
         </button>
     </div>
+
+    <!-- Task 2: Join Telegram Group -->
+    <div class="content">
+        <!-- Telegram Logo -->
+        <div class="logo-container">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg" alt="Telegram Logo" class="logo">
+        </div>
     
+        <!-- Task Description -->
+        <div class="task-description">
+            <h2>Join Telegram Group</h2>
+            <p>+10,000</p>
+        </div>
+    
+        <!-- Task Button -->
+        <button id="task-button-2" class="task-button">
+            Start
+        </button>
+    </div>
 
     <div class="footer-navigation">
         <div class="nav-links">
@@ -177,57 +196,130 @@
         </div>
     </div>
 
-   <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const taskButton = document.getElementById("task-button");
-        const taskKey = "taskCompleted"; // Key to store task state in localStorage
-        const taskRewardPoints = 1000; // Points to reward for completing the task
-
-        // Function to check task completion status
-        function checkTaskCompletion() {
-            const taskCompleted = localStorage.getItem(taskKey) === "true";
-            if (taskCompleted) {
-                taskButton.textContent = "Completed";
-                taskButton.disabled = true;
-            } else {
-                taskButton.textContent = "Start";
-                taskButton.disabled = false;
-            }
-        }
-
-        // Function to complete the task
-        function completeTask() {
-            if (taskButton.textContent === "Start") {
-                taskButton.textContent = "In Progress...";
-                taskButton.disabled = true;
-
-                // Simulate task completion after 3 seconds
-                setTimeout(() => {
-                    taskButton.textContent = "Claim";
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Buttons for Task 1 and Task 2
+            const taskButton1 = document.getElementById("task-button-1");
+            const taskButton2 = document.getElementById("task-button-2");
+    
+            // Keys for storing task completion status
+            const taskKey1 = "taskCompleted1";
+            const taskKey2 = "taskCompleted2";
+    
+            // Reward points for each task
+            const taskRewardPoints1 = 1000;
+            const taskRewardPoints2 = 10000;
+    
+            // Your Telegram channel join link
+            const telegramJoinLink = 'https://t.me/YourChannelName'; // Replace with your actual channel link
+    
+            // Function to check task completion status
+            function checkTaskCompletion(taskButton, taskKey, taskRewardPoints) {
+                const taskCompleted = localStorage.getItem(taskKey) === "true";
+                if (taskCompleted) {
+                    taskButton.textContent = "Completed";
+                    taskButton.disabled = true;
+                } else {
+                    taskButton.textContent = "Start";
                     taskButton.disabled = false;
-                }, 3000);
-            } else if (taskButton.textContent === "Claim") {
-                // Reward the user with points
-                let totalPoints = parseInt(localStorage.getItem("totalPoints")) || 0;
-                totalPoints += taskRewardPoints;
-                localStorage.setItem("totalPoints", totalPoints);
-
-                // Mark the task as completed
-                localStorage.setItem(taskKey, "true");
-
-                // Update the UI
-                alert("You have joined the QuirkCoin Telegram channel and earned 5000 points!");
-                checkTaskCompletion();
+                }
+    
+                // Handle button click event
+                taskButton.addEventListener("click", function() {
+                    if (taskButton.textContent === "Start") {
+                        taskButton.textContent = "In Progress...";  // Indicate task is in progress
+                        taskButton.disabled = true;  // Disable button
+    
+                        // Using Telegram Web App to get user info
+                        if (window.Telegram) {
+                            window.Telegram.WebApp.initData();
+                            const userId = window.Telegram.WebApp.initDataUnsafe.user.id;
+    
+                            // Verify if the user is a member of the Telegram channel (using Bot API)
+                            checkTelegramMembership(userId).then(isMember => {
+                                if (isMember) {
+                                    taskButton.textContent = "Claim";  // Allow claim
+                                    taskButton.disabled = false;  // Re-enable button
+                                } else {
+                                    alert("You must join the Telegram channel to complete this task.");
+                                    taskButton.disabled = false; // Enable button again
+                                }
+                            });
+                        } else {
+                            alert("Telegram Web App is not available.");
+                        }
+                    } else if (taskButton.textContent === "Claim") {
+                        // Reward the user with points
+                        let totalPoints = parseInt(localStorage.getItem("totalPoints")) || 0;
+                        totalPoints += taskRewardPoints;
+                        localStorage.setItem("totalPoints", totalPoints);  // Save total points
+    
+                        // Mark task as completed
+                        localStorage.setItem(taskKey, "true");
+    
+                        // Update the UI
+                        alert(`You have completed the task and earned ${taskRewardPoints} points!`);
+                        checkTaskCompletion(taskButton, taskKey, taskRewardPoints);  // Recheck task completion
+                    }
+                });
             }
+    
+            // Function to check if the user is a member of the Telegram channel (Bot API)
+            async function checkTelegramMembership(userId) {
+                const botToken = 'YOUR_BOT_TOKEN';  // Replace with your bot token
+                const chatId = '@YourChannelName';  // Replace with your channel username or chat ID
+                const url = `https://api.telegram.org/bot${botToken}/getChatMember?chat_id=${chatId}&user_id=${userId}`;
+    
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    if (data.ok) {
+                        const status = data.result.status;
+                        return status === 'member' || status === 'administrator' || status === 'creator';  // Check if user is a member
+                    } else {
+                        console.error('Error checking Telegram membership:', data);
+                        return false;
+                    }
+                } catch (error) {
+                    console.error('Error checking Telegram membership:', error);
+                    return false;
+                }
+            }
+    
+            // Initialize tasks on page load
+            checkTaskCompletion(taskButton1, taskKey1, taskRewardPoints1);
+            checkTaskCompletion(taskButton2, taskKey2, taskRewardPoints2);
+        });
+
+        const TelegramBot = require('node-telegram-bot-api');
+
+// Initialize your bot with the token
+const bot = new TelegramBot('7932400528:AAE3H1QaRxsoygNKr-QChsBbUXIN35yTnmE', { polling: true });
+
+// Channel username
+const channelUsername = '@quirkcoinofficialchannel';
+
+// Listen for `/start` command
+bot.onText(/\/start/, async (msg) => {
+    const userId = msg.from.id;  // Get the user ID from the message
+    
+    try {
+        // Call getChatMember to check if the user is a member of the channel
+        const chatMember = await bot.getChatMember(channelUsername, userId);
+
+        // Check the status of the user (member, admin, creator)
+        if (chatMember.status === 'member' || chatMember.status === 'administrator' || chatMember.status === 'creator') {
+            // User is a member, administrator, or creator of the channel
+            bot.sendMessage(userId, 'Welcome back! You are a member of the channel.');
+        } else {
+            // User is not a member of the channel
+            bot.sendMessage(userId, 'You need to join the channel before proceeding. Please join @quirkcoinofficialchannel.');
         }
-
-        // Event listener for the task button
-        taskButton.addEventListener("click", completeTask);
-
-        // Initialize task state on page load
-        checkTaskCompletion();
-    });
-</script>
-
+    } catch (error) {
+        console.error('Error checking chat member:', error);
+        bot.sendMessage(userId, 'Sorry, there was an error checking your membership. Please try again later.');
+    }
+});
+    </script>        
 </body>
 </html>
